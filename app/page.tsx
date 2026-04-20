@@ -39,9 +39,6 @@ export default function Home() {
             <li>Code & image generation</li>
           </ul>
 
-          <a href="#" className="text-blue-400 hover:underline">
-            View Demo
-          </a>
         </div>
 
         {/* Fire System */}
