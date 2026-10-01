@@ -4,6 +4,7 @@ import { useRef } from "react";
 import { motion, useScroll, useTransform } from "motion/react";
 import { profile } from "@/lib/data";
 import { Reveal, ScrollWords, SectionLabel } from "../reveal";
+import { Portrait } from "../portrait";
 
 const focus = [
   { k: "Full-stack", v: "Products from schema to interface: Next.js, Node, Postgres, Supabase." },
@@ -27,12 +28,14 @@ export function About() {
 
         <div className="mt-20 grid gap-12 border-t border-line pt-10 md:mt-32 md:grid-cols-12">
           <Reveal className="md:col-span-4">
-            <dl className="space-y-5 text-sm">
+            <Portrait src="/me/vineet.webp" alt="Portrait of Vineet Rohit Shah in a black suit, seated on stone steps" />
+            <dl className="mt-10 space-y-5 text-sm">
               {[
                 ["Studying", "B.Tech, Computer Science Engineering"],
                 ["University", `${profile.university}, ${profile.city}`],
                 ["Location", `${profile.city}, ${profile.country} · ${profile.coords}`],
-                ["Currently", "Building CIPHER, a local-first AI SOC"],
+                ["Currently", "Intern at Shaibya Solution · building CIPHER"],
+                ["Also", "Sports Co-Head, CSE Committee"],
               ].map(([k, v]) => (
                 <div key={k} className="grid grid-cols-[7rem_1fr] gap-4">
                   <dt className="micro pt-0.5 text-fg-dim">{k}</dt>

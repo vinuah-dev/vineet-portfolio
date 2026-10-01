@@ -17,7 +17,7 @@ export async function Activity() {
       <div className="container-x">
         <div className="flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
           <div>
-            <SectionLabel index="05" label="Activity" />
+            <SectionLabel index="06" label="Activity" />
             <SplitText
               id="activity-title"
               text={"The build log,\n*in public.*"}

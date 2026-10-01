@@ -1,4 +1,4 @@
-import { stack } from "@/lib/data";
+import { stack, techUsage } from "@/lib/data";
 import { Reveal, SectionLabel, SplitText } from "../reveal";
 
 export function Stack() {
@@ -9,7 +9,7 @@ export function Stack() {
       <div className="container-x">
         <div className="flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
           <div>
-            <SectionLabel index="04" label="Stack" />
+            <SectionLabel index="05" label="Stack" />
             <SplitText
               id="stack-title"
               text={"Tools I reach\nfor *daily.*"}
@@ -22,6 +22,9 @@ export function Stack() {
             </span>
             <span>
               <span className="text-fg">{total}</span> technologies
+            </span>
+            <span className="flex items-center gap-1.5">
+              <span className="h-px w-4 border-b-2 border-dotted border-accent/60" /> hover or tap: where it&apos;s used
             </span>
           </Reveal>
         </div>
@@ -50,7 +53,20 @@ export function Stack() {
                     y={20}
                     className="flex items-baseline gap-3 text-[clamp(1.5rem,3.2vw,2.75rem)] font-medium leading-tight tracking-[-0.03em] text-fg/80 transition-colors duration-300 group-hover/row:text-fg"
                   >
-                    {item}
+                    {techUsage[item] ? (
+                      <button type="button" className="group/tech relative cursor-help outline-none">
+                        <span className="underline decoration-accent/40 decoration-dotted decoration-2 underline-offset-[0.18em] transition-colors group-hover/tech:text-accent group-focus-visible/tech:text-accent">{item}</span>
+                        <span
+                          role="tooltip"
+                          className="pointer-events-none absolute bottom-full left-0 z-10 mb-2 hidden w-max max-w-[min(16rem,70vw)] border border-line-strong bg-bg-elev px-3 py-2 text-left font-mono text-[11px] font-normal leading-snug tracking-normal text-fg-muted shadow-xl group-hover/tech:block group-focus/tech:block"
+                        >
+                          <span className="micro block text-[9px] text-fg-dim">Used in</span>
+                          <span className="text-fg">{techUsage[item].join(" · ")}</span>
+                        </span>
+                      </button>
+                    ) : (
+                      item
+                    )}
                     {ii < g.items.length - 1 && (
                       <span aria-hidden className="font-serif text-[0.8em] font-normal italic text-fg-dim">
                         /

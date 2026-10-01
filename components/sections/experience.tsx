@@ -2,6 +2,7 @@
 
 import { useLayoutEffect, useRef, useState } from "react";
 import { motion, useInView, useScroll, useSpring, useTransform } from "motion/react";
+import Image from "next/image";
 import { ArrowUpRight } from "lucide-react";
 import { achievements, timeline } from "@/lib/data";
 import { Reveal, SectionLabel, SplitText } from "../reveal";
@@ -10,7 +11,7 @@ export function Experience() {
   return (
     <section id="experience" aria-labelledby="experience-title" className="relative pt-32 md:pt-48">
       <div className="container-x">
-        <SectionLabel index="03" label="Experience & milestones" />
+        <SectionLabel index="04" label="Experience & milestones" />
         <SplitText
           as="h2"
           id="experience-title"
@@ -69,28 +70,41 @@ function Milestones() {
             <Reveal
               key={a.title}
               delay={i * 0.06}
-              className="group relative flex min-h-[18rem] flex-col justify-between border border-line bg-bg-elev p-6 transition-colors duration-500 hover:border-line-strong md:h-[60svh] md:max-h-[34rem] md:min-h-[24rem] md:w-[min(30rem,38vw)] md:p-8"
+              className="group relative flex min-h-[18rem] flex-col justify-between overflow-hidden border border-line bg-bg-elev p-6 transition-colors duration-500 hover:border-line-strong md:h-[60svh] md:max-h-[34rem] md:min-h-[24rem] md:w-[min(30rem,38vw)] md:p-8"
             >
-              <div className="flex items-start justify-between">
-                <span className="micro text-fg-dim">0{i + 1}</span>
+              {a.image && (
+                <div aria-hidden className="absolute inset-x-0 top-0 h-[55%] overflow-hidden">
+                  <Image
+                    src={a.image.src}
+                    alt=""
+                    fill
+                    sizes="(min-width: 768px) 30rem, 100vw"
+                    className="object-cover opacity-45 grayscale transition duration-700 ease-[var(--ease-out)] group-hover:scale-105 group-hover:opacity-90 group-hover:grayscale-0"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-b from-bg-elev/30 via-bg-elev/40 to-bg-elev" />
+                </div>
+              )}
+              <div className="relative flex items-start justify-between">
+                <span className="micro bg-bg-elev/85 px-1.5 py-0.5 text-fg-muted">0{i + 1} · {a.meta}</span>
                 {a.link && (
                   <a
                     href={a.link}
                     target="_blank"
                     rel="noreferrer"
                     aria-label={`${a.title} repository`}
-                    className="grid size-8 place-items-center border border-line text-fg-muted transition-colors hover:border-accent hover:text-accent"
+                    className="grid size-8 place-items-center border border-line bg-bg-elev text-fg-muted transition-colors hover:border-accent hover:text-accent"
                   >
                     <ArrowUpRight className="size-4" />
                   </a>
                 )}
               </div>
-              <div>
+              <div className="relative">
                 <div className="display text-[clamp(3.5rem,7vw,6.5rem)] text-fg transition-colors duration-500 group-hover:text-accent">
                   {a.mark}
                 </div>
                 <h3 className="mt-6 text-lg font-medium tracking-tight">{a.title}</h3>
                 <p className="mt-2 text-sm text-fg-muted">{a.note}</p>
+                {a.image && <p className="sr-only">{a.image.alt}</p>}
               </div>
             </Reveal>
           ))}

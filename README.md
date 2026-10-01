@@ -24,8 +24,14 @@ app/
   opengraph-image.tsx   generated social card
   icon.svg              monogram favicon
 components/
-  sections/             hero, about, work, experience, stack, activity, contact
-  project-visuals.tsx   code-built UI mockups for each project (no images)
+  sections/             hero, about, work, lab, experience, stack, activity, contact
+  project-media.tsx     real screenshots: tabs, 3D tilt, lightbox, in-view video
+  project-visuals.tsx   code-built visual for projects without screenshots (CIPHER)
+  evac-sim.tsx          playable SAFEX evacuation sim (hazard-aware A*)
+  jarvis.tsx            in-browser Jarvis: voice/text intent router that drives the page
+  command-palette.tsx   ⌘K / Ctrl K palette
+  talk-menu.tsx         "Let's talk" menu (Gmail, LinkedIn, Instagram)
+  portrait.tsx          halftone portrait with a reveal lens
   nav.tsx               sticky glass nav, active-section indicator, mobile menu
   cursor.tsx            desktop-only custom cursor (dot + ring + labels)
   magnetic.tsx          magnetic hover wrapper
@@ -35,6 +41,13 @@ lib/
   data.ts               ALL site content: edit this file to update copy
   github.ts             server-side GitHub API fetch (hourly ISR, fails soft)
 ```
+
+## Assets
+
+`public/work/` holds real project screenshots (SAFEX design views, SENTINEL-X dashboard in
+its synthetic test mode, Revolution Gym pages, Jarvis HUD frames + a 20 s muted loop).
+`public/milestones/` holds ANVESHAN / EFOS photos and `public/me/` the portrait. All WebP,
+served through `next/image`.
 
 ## Content
 

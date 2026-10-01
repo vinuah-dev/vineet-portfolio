@@ -39,12 +39,9 @@ export function Cursor() {
     const root = document.documentElement;
     root.classList.add("has-cursor");
 
-    const onMove = (e: PointerEvent) => {
-      if (e.pointerType !== "mouse") return;
-      x.set(e.clientX);
-      y.set(e.clientY);
-      setVisible(true);
-      const target = e.target as Element | null;
+    let lastX = -1;
+    let lastY = -1;
+    const classify = (target: Element | null) => {
       const labelled = target?.closest<HTMLElement>("[data-cursor]");
       if (labelled) {
         setMode("label");
@@ -55,17 +52,31 @@ export function Cursor() {
         setMode("default");
       }
     };
+    const onMove = (e: PointerEvent) => {
+      if (e.pointerType !== "mouse") return;
+      lastX = e.clientX;
+      lastY = e.clientY;
+      x.set(e.clientX);
+      y.set(e.clientY);
+      setVisible(true);
+      classify(e.target as Element | null);
+    };
+    const onScroll = () => {
+      if (lastX >= 0) classify(document.elementFromPoint(lastX, lastY));
+    };
     const onLeave = () => setVisible(false);
     const onDown = () => setDown(true);
     const onUp = () => setDown(false);
 
     window.addEventListener("pointermove", onMove, { passive: true });
+    window.addEventListener("scroll", onScroll, { passive: true });
     document.addEventListener("pointerleave", onLeave);
     window.addEventListener("pointerdown", onDown);
     window.addEventListener("pointerup", onUp);
     return () => {
       root.classList.remove("has-cursor");
       window.removeEventListener("pointermove", onMove);
+      window.removeEventListener("scroll", onScroll);
       document.removeEventListener("pointerleave", onLeave);
       window.removeEventListener("pointerdown", onDown);
       window.removeEventListener("pointerup", onUp);

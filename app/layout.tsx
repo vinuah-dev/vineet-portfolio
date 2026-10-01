@@ -4,6 +4,8 @@ import { Providers } from "@/components/providers";
 import { Cursor } from "@/components/cursor";
 import { Nav } from "@/components/nav";
 import { ScrollProgress } from "@/components/scroll-progress";
+import { CommandPalette } from "@/components/command-palette";
+import { Jarvis } from "@/components/jarvis";
 import { profile } from "@/lib/data";
 import "./globals.css";
 
@@ -93,6 +95,8 @@ export default function RootLayout({
           <ScrollProgress />
           <Nav />
           {children}
+          <CommandPalette />
+          <Jarvis />
           <Cursor />
         </Providers>
       </body>

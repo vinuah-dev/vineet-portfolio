@@ -1,16 +1,17 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { ArrowUpRight, Check, Copy } from "lucide-react";
+import { ArrowUpRight, Check, Copy, Mail } from "lucide-react";
 import { motion, useScroll, useTransform } from "motion/react";
 import { profile } from "@/lib/data";
-import { GithubIcon, LinkedinIcon } from "../icons";
+import { GithubIcon, InstagramIcon, LinkedinIcon } from "../icons";
 import { Magnetic } from "../magnetic";
 import { Reveal, SectionLabel, SplitText } from "../reveal";
 
 const links = [
-  { label: "Email", value: profile.email, href: `mailto:${profile.email}`, icon: null },
+  { label: "Gmail", value: profile.email, href: `mailto:${profile.email}`, icon: Mail },
   { label: "LinkedIn", value: "Vineet Shah", href: profile.linkedin, icon: LinkedinIcon },
+  { label: "Instagram", value: `@${profile.instagramHandle}`, href: profile.instagram, icon: InstagramIcon },
   { label: "GitHub", value: `@${profile.githubUser}`, href: profile.github, icon: GithubIcon },
 ];
 
@@ -62,7 +63,7 @@ export function Contact() {
       />
 
       <div className="container-x">
-        <SectionLabel index="06" label="Contact" />
+        <SectionLabel index="07" label="Contact" />
         <SplitText
           id="contact-title"
           text={"Have an idea?\nLet’s *build* it."}
@@ -136,7 +137,7 @@ export function Contact() {
 
 function Footer() {
   return (
-    <footer className="container-x mt-24 flex flex-col gap-4 pb-10 text-xs text-fg-dim md:mt-32 md:flex-row md:items-center md:justify-between">
+    <footer className="container-x mt-24 flex flex-col gap-4 pb-28 text-xs text-fg-dim md:mt-32 md:flex-row md:items-center md:justify-between">
       <span className="micro">
         © {new Date().getFullYear()} {profile.name}
       </span>

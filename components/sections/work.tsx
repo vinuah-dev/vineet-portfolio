@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion, useInView, useScroll, useTransform } from "motion/react";
 import { ArrowUpRight } from "lucide-react";
 import { projects, profile, type Project } from "@/lib/data";
-import { ProjectVisual } from "../project-visuals";
+import { ProjectMedia } from "../project-media";
 import { Reveal, SectionLabel, SplitText } from "../reveal";
 import { GithubIcon } from "../icons";
 
@@ -25,8 +25,8 @@ export function Work() {
             />
           </div>
           <Reveal className="max-w-xs text-sm leading-relaxed text-fg-muted md:pb-3">
-            Five builds across security, computer vision, voice AI and product. Each one started with a
-            real problem.
+            Five builds across computer vision, voice AI, surveillance, security and product. Real
+            screenshots: tap one to expand it.
           </Reveal>
         </div>
 
@@ -46,12 +46,19 @@ export function Work() {
                   <span className="micro text-fg-dim">
                     <span className="text-fg">{current.index}</span> / {String(projects.length).padStart(2, "0")}
                   </span>
-                  <div className="flex gap-1.5" aria-hidden>
+                  <div className="flex items-center gap-1.5">
                     {projects.map((p, i) => (
-                      <span
+                      <button
                         key={p.name}
-                        className={`h-px transition-all duration-500 ${i === active ? "w-10 bg-accent" : "w-4 bg-line-strong"}`}
-                      />
+                        type="button"
+                        aria-label={`Jump to ${p.name}`}
+                        onClick={() => document.getElementById(`project-${p.slug}`)?.scrollIntoView({ behavior: "smooth", block: "center" })}
+                        className="group/dot py-2"
+                      >
+                        <span
+                          className={`block h-px transition-all duration-500 ${i === active ? "w-10 bg-accent" : "w-4 bg-line-strong group-hover/dot:w-6 group-hover/dot:bg-fg"}`}
+                        />
+                      </button>
                     ))}
                   </div>
                 </div>
@@ -83,37 +90,18 @@ export function Work() {
 }
 
 function VisualStage({ project }: { project: Project }) {
-  const href = project.github ?? project.live;
-  const inner = (
-    <AnimatePresence mode="popLayout" initial={false}>
+  return (
+    <AnimatePresence mode="wait" initial={false}>
       <motion.div
-        key={project.name}
-        initial={{ opacity: 0, scale: 0.96, filter: "blur(6px)" }}
-        animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
-        exit={{ opacity: 0, scale: 1.02, filter: "blur(6px)" }}
-        transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
-        className="absolute inset-0"
+        key={project.slug}
+        initial={{ opacity: 0, y: 24, filter: "blur(6px)" }}
+        animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+        exit={{ opacity: 0, y: -16, filter: "blur(6px)" }}
+        transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
       >
-        <ProjectVisual kind={project.visual} />
+        <ProjectMedia project={project} />
       </motion.div>
     </AnimatePresence>
-  );
-
-  return href ? (
-    <a
-      href={href}
-      target="_blank"
-      rel="noreferrer"
-      data-cursor="View repo"
-      aria-label={`${project.name} repository on GitHub`}
-      className="relative block aspect-[4/3] w-full"
-    >
-      {inner}
-    </a>
-  ) : (
-    <div className="relative aspect-[4/3] w-full" data-cursor={project.status ?? "Soon"}>
-      {inner}
-    </div>
   );
 }
 
@@ -129,10 +117,10 @@ function ProjectEntry({ project, onActive }: { project: Project; onActive: () =>
   }, [inView, onActive]);
 
   return (
-    <li ref={ref} className="border-t border-line py-14 first:border-t-0 first:pt-0 md:py-20 lg:flex lg:min-h-[100svh] lg:flex-col lg:justify-center lg:border-t-0 lg:py-0">
+    <li ref={ref} id={`project-${project.slug}`} className="scroll-mt-24 border-t border-line py-14 first:border-t-0 first:pt-0 md:py-20 lg:flex lg:min-h-[100svh] lg:flex-col lg:justify-center lg:border-t-0 lg:py-0">
       {/* Inline visual (mobile/tablet) */}
-      <motion.div style={{ scale: mobileScale, y: mobileY }} className="mb-10 aspect-[4/3] w-full lg:hidden">
-        <ProjectVisual kind={project.visual} />
+      <motion.div style={{ scale: mobileScale, y: mobileY }} className="mb-10 w-full lg:hidden">
+        <ProjectMedia project={project} />
       </motion.div>
 
       <Reveal y={16}>
@@ -146,6 +134,15 @@ function ProjectEntry({ project, onActive }: { project: Project; onActive: () =>
       </Reveal>
 
       <SplitText as="h3" text={project.name} className="display mt-5 text-[clamp(2.5rem,5vw,4.5rem)]" stagger={0.06} />
+
+      {project.badge && (
+        <Reveal delay={0.05}>
+          <span className="micro mt-5 inline-flex items-center gap-2 border border-accent/40 bg-accent-soft px-2.5 py-1 text-accent">
+            <span className="size-1 rotate-45 bg-accent" />
+            {project.badge}
+          </span>
+        </Reveal>
+      )}
 
       <Reveal delay={0.1}>
         <p className="mt-6 max-w-md leading-relaxed text-fg-muted">{project.summary}</p>

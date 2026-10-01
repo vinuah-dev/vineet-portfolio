@@ -40,6 +40,7 @@
 /* ───────────────────────── Base ───────────────────────── */
 
 html {
+  overflow-x: clip;
   scroll-behavior: smooth;
   scroll-padding-top: 5rem;
   -webkit-text-size-adjust: 100%;

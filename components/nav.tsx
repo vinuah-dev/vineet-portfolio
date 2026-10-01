@@ -3,7 +3,8 @@
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion, useMotionValueEvent, useScroll } from "motion/react";
 import { navItems, profile } from "@/lib/data";
-import { Magnetic } from "./magnetic";
+import { TalkMenu, socialIcon } from "./talk-menu";
+import { socials } from "@/lib/data";
 
 export function Nav() {
   const [scrolled, setScrolled] = useState(false);
@@ -35,6 +36,7 @@ export function Nav() {
     if (!open) return;
     const prev = document.documentElement.style.overflow;
     document.documentElement.style.overflow = "hidden";
+    document.documentElement.dataset.menu = "open";
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         setOpen(false);
@@ -44,6 +46,7 @@ export function Nav() {
     window.addEventListener("keydown", onKey);
     return () => {
       document.documentElement.style.overflow = prev;
+      delete document.documentElement.dataset.menu;
       window.removeEventListener("keydown", onKey);
     };
   }, [open]);
@@ -98,14 +101,15 @@ export function Nav() {
               <span className="animate-pulse-dot size-1.5 rounded-full bg-ok" />
               Available
             </span>
-            <Magnetic>
-              <a
-                href={`mailto:${profile.email}`}
-                className="inline-flex items-center gap-2 rounded-full bg-fg px-4 py-2 text-[13px] font-medium text-bg transition-colors hover:bg-accent"
-              >
-                Let&apos;s talk
-              </a>
-            </Magnetic>
+            <button
+              type="button"
+              onClick={() => window.dispatchEvent(new Event("palette:open"))}
+              aria-label="Open command palette"
+              className="hidden items-center gap-1.5 rounded-full border border-line px-3 py-1.5 font-mono text-[11px] text-fg-muted transition-colors hover:border-line-strong hover:text-fg lg:inline-flex"
+            >
+              <kbd className="font-mono">⌘</kbd>K
+            </button>
+            <TalkMenu />
           </div>
 
           <button
@@ -161,13 +165,26 @@ export function Nav() {
                 </li>
               ))}
             </ul>
-            <div className="container-x flex items-center justify-between pb-10 pt-6">
-              <a href={`mailto:${profile.email}`} className="text-sm text-fg-muted">
-                {profile.email}
-              </a>
-              <span className="micro flex items-center gap-2 text-fg-dim">
-                <span className="animate-pulse-dot size-1.5 rounded-full bg-ok" /> Available
-              </span>
+            <div className="container-x pb-10 pt-6">
+              <p className="micro text-fg-dim">Let&apos;s talk</p>
+              <ul className="mt-3 grid grid-cols-3 gap-2">
+                {socials.map((so) => {
+                  const Icon = socialIcon[so.id];
+                  return (
+                    <li key={so.id}>
+                      <a
+                        href={so.href}
+                        target={so.id === "email" ? undefined : "_blank"}
+                        rel="noreferrer"
+                        className="flex flex-col items-center gap-2 border border-line py-4 text-[12px] text-fg-muted active:bg-white/[0.05]"
+                      >
+                        <Icon className="size-5 text-fg" />
+                        {so.label}
+                      </a>
+                    </li>
+                  );
+                })}
+              </ul>
             </div>
           </motion.div>
         )}
