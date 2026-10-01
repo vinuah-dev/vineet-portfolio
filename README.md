@@ -1,36 +1,52 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# vineet-portfolio
 
-## Getting Started
+Personal site of **Vineet Rohit Shah**: Computer Science Engineering student, AI/ML and full-stack developer.
 
-First, run the development server:
+Built with Next.js 16 (App Router, Turbopack), React 19, TypeScript, Tailwind CSS v4 and Motion.
+
+## Develop
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+npm run dev     # http://localhost:3000
+npm run build   # production build
+npm run lint
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Structure
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```
+app/
+  layout.tsx            fonts (Geist, Geist Mono, Instrument Serif), metadata, global chrome
+  page.tsx              section composition
+  template.tsx          CSS page-enter transition
+  not-found.tsx         custom 404
+  opengraph-image.tsx   generated social card
+  icon.svg              monogram favicon
+components/
+  sections/             hero, about, work, experience, stack, activity, contact
+  project-visuals.tsx   code-built UI mockups for each project (no images)
+  nav.tsx               sticky glass nav, active-section indicator, mobile menu
+  cursor.tsx            desktop-only custom cursor (dot + ring + labels)
+  magnetic.tsx          magnetic hover wrapper
+  reveal.tsx            Reveal / SplitText / ScrollWords / SectionLabel primitives
+  signal-field.tsx      cursor-reactive canvas background for the hero
+lib/
+  data.ts               ALL site content: edit this file to update copy
+  github.ts             server-side GitHub API fetch (hourly ISR, fails soft)
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Content
 
-## Learn More
+Everything visible on the site (projects, achievements, timeline, stack, links) lives in
+`lib/data.ts`. To add a live demo link to a project, set its `live` field.
 
-To learn more about Next.js, take a look at the following resources:
+## GitHub data
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+The Activity section fetches profile, repositories and public events from the GitHub REST API
+on the server and revalidates hourly. If the API is unavailable it falls back to static
+repository links and hides live numbers rather than showing invented ones. Optionally set
+`GITHUB_TOKEN` (read-only, no scopes) to raise the rate limit.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Set `NEXT_PUBLIC_SITE_URL` to your production URL for correct Open Graph links (Vercel's
+production URL is detected automatically).
