@@ -34,7 +34,7 @@ export function About() {
                 ["Studying", "B.Tech, Computer Science Engineering"],
                 ["University", `${profile.university}, ${profile.city}`],
                 ["Location", `${profile.city}, ${profile.country} · ${profile.coords}`],
-                ["Currently", "Intern at Shaibya Solution · building CIPHER"],
+                ["Currently", "Working on something new. Stay tuned."],
                 ["Also", "Sports Co-Head, CSE Committee"],
               ].map(([k, v]) => (
                 <div key={k} className="grid grid-cols-[7rem_1fr] gap-4">

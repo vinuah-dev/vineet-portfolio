@@ -30,7 +30,7 @@ function route(raw: string): Reply {
   if (has("mail", "gmail")) return { intent: "open.email", text: `Composing an email to ${profile.email}.`, action: () => open(`mailto:${profile.email}`) };
 
   if (has("sim", "simulat", "play", "demo", "try"))
-    return { intent: "lab.evac", text: "Loading the SAFEX evacuation simulator. Click the floor plan to start fires and watch A* re-route everyone.", action: () => go("lab") };
+    return { intent: "lab.evac", text: "Loading the SAFE-X evacuation simulator. Click the floor plan to start fires and watch A* re-route everyone.", action: () => go("lab") };
   if (has("safex", "fire", "evacuat", "medithon"))
     return { intent: "project.safex", text: `${project("safex").summary} It placed Top 5 at Medha Medithon 2026.`, action: () => go("project-safex", "center") };
   if (has("sentinel", "sih", "border", "surveil", "garuda"))
@@ -42,7 +42,7 @@ function route(raw: string): Reply {
   if (has("jarvis", "yourself", "who are you", "what are you"))
     return {
       intent: "project.jarvis",
-      text: "I'm a small web cousin of the real Jarvis: a desktop voice assistant Vineet built that won ANVESHAN 2026. The original controls apps, the browser and WhatsApp.",
+      text: "I'm a small web cousin of the real one. Vineet's Jarvis won ANVESHAN 2026, and its latest build, NIVA NEXUS, writes and tests its own new skills on demand.",
       action: () => go("project-jarvis", "center"),
     };
 
@@ -55,7 +55,7 @@ function route(raw: string): Reply {
       action: () => go("experience"),
     };
   if (has("intern", "experience", "job", "shaibya", "committee", "sports", "lead"))
-    return { intent: "experience", text: "He's a Software Development Intern at Shaibya Solution and Sports Co-Head of the CSE Committee.", action: () => go("experience") };
+    return { intent: "experience", text: "He interned as a Software Development Intern at Shaibya Solution, and he's Sports Co-Head of the CSE Committee at Ramdeobaba University.", action: () => go("experience") };
   if (has("skill", "stack", "tech", "language", "know"))
     return { intent: "stack", text: "Python and TypeScript first; React and Next.js on the front; FastAPI and Node behind; YOLOv8 and OpenCV for vision.", action: () => go("stack") };
   if (has("contact", "hire", "reach", "talk", "email", "connect", "dm"))

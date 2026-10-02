@@ -14,9 +14,8 @@ export const profile = {
   github: "https://github.com/vinuah-dev",
   githubUser: "vinuah-dev",
   linkedin: "https://www.linkedin.com/in/vineet-shah-70263721a/",
-  // Instagram handles can't contain "-": confirm the exact handle and update both fields.
-  instagram: "https://www.instagram.com/vinuah.dev/",
-  instagramHandle: "vinuah.dev",
+  instagram: "https://www.instagram.com/vinuah_dev/",
+  instagramHandle: "vinuah_dev",
   availability: "Open to internships & collaborations",
 } as const;
 
@@ -52,14 +51,15 @@ export type Project = {
   status?: string;
   /** Real screenshots. Projects without any fall back to a code-built visual. */
   shots?: Shot[];
-  video?: { src: string; poster: string };
+  /** Inline loop (muted until the viewer turns sound on) + optional full-length cut for the lightbox. */
+  video?: { src: string; poster: string; caption: string; full?: string };
 };
 
 export const projects: Project[] = [
   {
     index: "01",
     slug: "safex",
-    name: "SAFEX AI",
+    name: "SAFE-X AI",
     kind: "Computer Vision · Fire safety",
     summary:
       "Turns existing CCTV into a live evacuation system. YOLOv8 spots fire, smoke and people, a hazard grid scores every zone, and A* routes each person to the safest exit.",
@@ -69,8 +69,8 @@ export const projects: Project[] = [
     badge: "Medha Medithon 2026 · Top 5",
     github: "https://github.com/vinuah-dev/fire-vdo",
     shots: [
-      { src: "/work/safex-dashboard.webp", alt: "SAFEX AI hospital dashboard during a fire alarm", caption: "Command dashboard · alarm state", w: 1800, h: 980 },
-      { src: "/work/safex-route.webp", alt: "SAFEX AI live hazard schematic with evacuation route", caption: "Live hazard schematic + evac route", w: 1280, h: 1102 },
+      { src: "/work/safex-dashboard.webp", alt: "SAFE-X AI hospital dashboard during a fire alarm", caption: "Command dashboard · alarm state", w: 1800, h: 980 },
+      { src: "/work/safex-route.webp", alt: "SAFE-X AI live hazard schematic with evacuation route", caption: "Live hazard schematic + evac route", w: 1280, h: 1102 },
       { src: "/work/safex-detection.webp", alt: "Fire detection model flagging a critical fire", caption: "Detection model · critical risk", w: 706, h: 425 },
     ],
   },
@@ -78,20 +78,25 @@ export const projects: Project[] = [
     index: "02",
     slug: "jarvis",
     name: "Jarvis",
-    kind: "Voice AI · Automation",
+    kind: "Voice AI · Self-learning assistant",
     summary:
-      "A voice-first desktop assistant with a full HUD. It listens, understands intent and acts: it launches apps, drives the browser, sends WhatsApp messages and routes each request to the right AI.",
-    highlight: { label: "Key feature", value: "Multi-AI routing with neural, scanning and security modes" },
-    features: ["Speech recognition & wake word", "Desktop, browser & WhatsApp automation", "Code & image generation"],
-    tags: ["Python", "Speech Recognition", "LLM APIs", "Automation"],
+      "A voice-first desktop assistant that teaches itself. Ask for something it can't do and it writes the skill, sandbox-tests it, registers it and then does the task, all in one turn. The latest build, NIVA NEXUS, adds a full-screen gesture HUD with a zoomable universe.",
+    highlight: { label: "Key feature", value: "Auto-learn-then-do: new skills written, tested and run on demand" },
+    features: [
+      "40+ skills: apps, browser, WhatsApp, system, research",
+      "Self-improvement loop that patches its own code",
+      "Multi-model brain: Groq, Gemini or local Ollama",
+    ],
+    tags: ["Python", "PyQt5", "LLMs", "Speech", "Automation"],
     badge: "Winner · ANVESHAN 2026",
     github: "https://github.com/vinuah-dev/jarvis-ai",
-    video: { src: "/work/jarvis-hud.mp4", poster: "/work/jarvis-hud-cyan.webp" },
     shots: [
-      { src: "/work/jarvis-hud-cyan.webp", alt: "Jarvis HUD in neural mode", caption: "Neural mode", w: 848, h: 440 },
-      { src: "/work/jarvis-hud-green.webp", alt: "Jarvis HUD in scanning mode", caption: "Scanning mode", w: 848, h: 440 },
-      { src: "/work/jarvis-hud-red.webp", alt: "Jarvis HUD in security mode", caption: "Security mode", w: 848, h: 440 },
+      { src: "/work/niva-dashboard.webp", alt: "NIVA NEXUS dashboard with terminal, core and system vitals", caption: "NIVA NEXUS · dashboard", w: 1800, h: 1013 },
+      { src: "/work/niva-core.webp", alt: "NIVA full-screen HUD with the particle core", caption: "Full-screen HUD · core", w: 1800, h: 1013 },
+      { src: "/work/niva-galaxy.webp", alt: "NIVA full-screen universe view of the Milky Way", caption: "Full-screen HUD · galaxy", w: 1600, h: 900 },
+      { src: "/work/niva-saturn.webp", alt: "NIVA universe view zoomed in on Saturn", caption: "Universe · Saturn", w: 1600, h: 900 },
     ],
+    video: { src: "/work/jarvis-hud.mp4", poster: "/work/jarvis-hud-cyan.webp", caption: "Jarvis v1 · demo with sound", full: "/work/jarvis-demo.mp4" },
   },
   {
     index: "03",
@@ -107,7 +112,8 @@ export const projects: Project[] = [
     github: "https://github.com/vinuah-dev/SIH-TECH-GARUDA",
     shots: [
       { src: "/work/sentinel-dashboard.webp", alt: "SENTINEL-X command centre with live alerts", caption: "Command centre · synthetic test feed", w: 1800, h: 1050 },
-      { src: "/work/sentinel-alerts.webp", alt: "SENTINEL-X alerts with risk scores", caption: "Alerts, behaviours & risk scores", w: 1800, h: 800 },
+      { src: "/work/sentinel-alert.webp", alt: "SENTINEL-X alert with an explainable 90/100 risk breakdown", caption: "Explainable risk: every point named", w: 1100, h: 1116 },
+      { src: "/work/sentinel-zones.webp", alt: "SENTINEL-X zone settings with restricted and watch fences", caption: "Virtual fences per camera", w: 1800, h: 975 },
     ],
   },
   {
@@ -143,53 +149,126 @@ export const projects: Project[] = [
 ];
 
 export type Milestone = {
+  id: string;
+  /** Big word on the card */
   mark: string;
   title: string;
-  note: string;
-  meta: string;
-  image?: { src: string; alt: string };
-  link?: string;
+  /** One line under the title on the card */
+  line: string;
+  /** Header line in the expanded view */
+  period: string;
+  summary: string[];
+  points: { label: string; items: string[] };
+  closing?: string;
+  images?: { src: string; alt: string; w: number; h: number }[];
+  link?: { href: string; label: string };
 };
 
 export const achievements: Milestone[] = [
   {
+    id: "anveshan",
     mark: "Winner",
     title: "ANVESHAN Innovation Competition",
-    note: "First place with Jarvis at the project model competition.",
-    meta: "NIT Nagpur · Apr 2026",
-    image: { src: "/milestones/anveshan-winner.webp", alt: "Vineet holding the ANVESHAN 1st Winner board and trophy" },
+    line: "1st Place · NIT Nagpur · 2026",
+    period: "NIT Nagpur · April 2026",
+    summary: [
+      "Won 1st place at the ANVESHAN Project Model Competition at NIT Nagpur for an AI-powered innovation project. Presented and demonstrated the Jarvis AI Assistant, showcasing practical applications of artificial intelligence, automation, voice interaction and intelligent system design.",
+    ],
+    points: { label: "Achievement", items: ["Winner / 1st Place", "Project: Jarvis AI Assistant", "Venue: NIT Nagpur", "Competition: ANVESHAN Innovation Competition"] },
+    closing: "This achievement highlights my ability to turn an AI concept into a functional, demonstrable solution and present it effectively in a competitive environment.",
+    images: [
+      { src: "/milestones/anveshan-winner.webp", alt: "Vineet with the ANVESHAN 1st Winner board and trophy", w: 1200, h: 675 },
+      { src: "/milestones/anveshan-stage.webp", alt: "ANVESHAN prize ceremony on stage", w: 1400, h: 933 },
+      { src: "/milestones/anveshan-team.webp", alt: "Receiving the ANVESHAN 1st Winner award", w: 1400, h: 933 },
+      { src: "/milestones/anveshan-trophy.webp", alt: "ANVESHAN winner trophy", w: 960, h: 1280 },
+    ],
+    link: { href: "https://github.com/vinuah-dev/jarvis-ai", label: "Jarvis on GitHub" },
   },
   {
-    mark: "Top 8",
-    title: "EFOS SkillUp India Hackathon 2026",
-    note: "24-hour national-level innovation challenge.",
-    meta: "National level · 2026",
-    image: { src: "/milestones/efos-certificate.webp", alt: "EFOS SkillUp India Hackathon 2026 certificate of achievement" },
+    id: "efos",
+    mark: "Runner-Up",
+    title: "EFOS SkillUp India Hackathon",
+    line: "National Level · 24-Hour · 2026",
+    period: "National level · 2026",
+    summary: [
+      "Secured a Runner-Up position in the EFOS SkillUp India Hackathon 2026, a national-level 24-hour innovation challenge focused on AI, Data Science, Cyber Security and Open Innovation.",
+      "The competition involved developing and presenting a practical technology solution within a highly time-constrained environment, requiring rapid problem solving, teamwork, implementation and presentation.",
+    ],
+    points: { label: "Achievement", items: ["Runner-Up position (Top 8)", "National-level competition", "24-hour hackathon", "EFOS SkillUp India Hackathon 2026"] },
+    images: [{ src: "/milestones/efos-certificate.webp", alt: "EFOS SkillUp India Hackathon 2026 certificate of achievement", w: 1200, h: 848 }],
   },
   {
+    id: "medithon",
     mark: "Top 5",
     title: "Medha Medithon 2026",
-    note: "SAFEX AI: computer-vision fire evacuation for hospitals.",
-    meta: "2026",
+    line: "SAFE-X AI · VNIT Nagpur · 2026",
+    period: "National healthcare innovation challenge · VNIT Nagpur · 2026",
+    summary: [
+      "Reached the Top 5 at MEDHA MEDITHON 2026, a national-level healthcare innovation competition conducted at VNIT Nagpur.",
+      "Worked on SAFE-X AI, a computer-vision-based fire evacuation solution designed for hospital environments. The system uses AI and computer vision to identify hazards and assist with safer evacuation and routing during emergencies.",
+    ],
+    points: {
+      label: "Achievement",
+      items: ["Top 5", "National-level healthcare innovation competition", "Venue: VNIT Nagpur", "Project: SAFE-X AI", "Domain: AI · Computer Vision · Healthcare · Emergency Response"],
+    },
+    closing: "The competition brought together teams from across India to solve real-world healthcare challenges. Organisers reported 709+ registered teams, 102 solution submissions and 41 teams shortlisted for the pitching stage.",
+    images: [
+      { src: "/milestones/medithon-stage.webp", alt: "Receiving the Medha Medithon 2026 award on stage", w: 1599, h: 899 },
+      { src: "/milestones/medithon-team.webp", alt: "The SAFE-X AI team with certificates at VNIT Nagpur", w: 1599, h: 1200 },
+      { src: "/milestones/medithon-certificate.webp", alt: "Vineet holding the Medha Medithon certificate and trophy", w: 715, h: 1600 },
+      { src: "/milestones/medithon-trophy.webp", alt: "Medha Medithon 2026 trophy", w: 1000, h: 1333 },
+      { src: "/milestones/medithon-vnit.webp", alt: "The trophy in the VNIT Nagpur auditorium", w: 1600, h: 1200 },
+    ],
   },
   {
+    id: "sih",
     mark: "SIH",
     title: "Smart India Hackathon",
-    note: "Team Tech Garuda built SENTINEL-X for border surveillance.",
-    meta: "PS 26187 · MHA / SSB",
-    link: "https://github.com/vinuah-dev/SIH-TECH-GARUDA",
+    line: "Tech Garuda · PS 26187",
+    period: "Team Tech Garuda · Problem Statement 26187 · 2026",
+    summary: [
+      "Participated in Smart India Hackathon as part of Team Tech Garuda, working on SENTINEL-X, an AI-powered intelligent border surveillance and security system.",
+      "The project was designed around existing CCTV infrastructure and focused on real-time video analytics, human detection and tracking, vehicle detection, restricted-area monitoring, facial detection and automatic number plate recognition.",
+    ],
+    points: {
+      label: "Technology",
+      items: ["YOLO-based computer vision", "Real-time CCTV / RTSP streams", "Object detection and tracking", "ANPR", "AI-powered surveillance", "Real-time monitoring"],
+    },
+    closing: "Smart India Hackathon participant · Team Tech Garuda · Problem Statement 26187 · Project: SENTINEL-X.",
+    images: [{ src: "/milestones/tech-garuda.webp", alt: "Team Tech Garuda logo", w: 1000, h: 1000 }],
+    link: { href: "https://github.com/vinuah-dev/SIH-TECH-GARUDA", label: "SENTINEL-X on GitHub" },
   },
   {
+    id: "intern",
     mark: "Intern",
     title: "Software Development Intern",
-    note: "Building production software at Shaibya Solution.",
-    meta: "Shaibya Solution",
+    line: "Shaibya Solution · 2026",
+    period: "Shaibya Solution, Nagpur · 2026",
+    summary: [
+      "Software Development Intern at Shaibya Solution, Nagpur.",
+      "Worked on production-oriented software development and gained practical experience in building, debugging and improving real-world applications.",
+    ],
+    points: {
+      label: "Experience areas",
+      items: ["Full-stack development", "Web application development", "API integration", "Database systems", "Git / version control", "Building production-ready features"],
+    },
+    closing: "This experience provided exposure to professional development workflows beyond academic projects.",
   },
   {
+    id: "cse",
     mark: "Lead",
-    title: "CSE Committee: Sports Co-Head",
-    note: "Running department sports events and teams.",
-    meta: "Ramdeobaba University",
+    title: "CSE Committee — Sports Co-Head",
+    line: "Ramdeobaba University · 2026",
+    period: "Ramdeobaba University · 2026",
+    summary: [
+      "Serving as Sports Co-Head of the CSE Committee at Ramdeobaba University, helping organise and coordinate sports activities and events for the Computer Science & Engineering department.",
+    ],
+    points: {
+      label: "Responsibilities",
+      items: ["Planning sports events", "Coordinating students and teams", "Managing event execution", "Student engagement", "Supporting department-level activities"],
+    },
+    closing: "This role demonstrates leadership, coordination, teamwork and the ability to manage responsibilities alongside technical academics.",
+    images: [{ src: "/milestones/cse-committee.webp", alt: "Vineet in the CSE Committee blazer with his Sports Co-Head badge", w: 864, h: 1152 }],
   },
 ];
 
@@ -220,13 +299,13 @@ export const timeline = [
     period: "Hackathons",
     title: "Hackathons & competitions",
     org: "ANVESHAN · EFOS SkillUp · Medha Medithon · SIH",
-    body: "A winner's trophy, a national Top 8, a Medithon Top 5 and an SIH build, each taken from idea to working demo.",
+    body: "A winner's trophy, a national runner-up spot, a Medithon Top 5 and an SIH build, each taken from idea to working demo.",
     type: "Competitions",
   },
   {
     period: "Projects",
     title: "Computer vision & AI systems",
-    org: "SAFEX AI · Jarvis · SENTINEL-X · CIPHER",
+    org: "SAFE-X AI · Jarvis · SENTINEL-X · CIPHER",
     body: "Applied CV and LLM systems built around real constraints such as latency, privacy and safety.",
     type: "Engineering",
   },
@@ -243,14 +322,14 @@ export const stack = [
 
 /** Which featured projects use a technology (drives the Stack hover/tap interaction). */
 export const techUsage: Record<string, string[]> = {
-  Python: ["SAFEX AI", "Jarvis", "SENTINEL-X", "CIPHER"],
-  JavaScript: ["Revolution Gym", "SAFEX AI"],
-  HTML: ["Revolution Gym", "SAFEX AI"],
-  CSS: ["Revolution Gym", "SAFEX AI"],
-  FastAPI: ["SAFEX AI", "SENTINEL-X"],
-  WebSockets: ["SAFEX AI", "SENTINEL-X"],
-  YOLOv8: ["SAFEX AI", "SENTINEL-X"],
-  OpenCV: ["SAFEX AI", "SENTINEL-X"],
+  Python: ["SAFE-X AI", "Jarvis", "SENTINEL-X", "CIPHER"],
+  JavaScript: ["Revolution Gym", "SAFE-X AI"],
+  HTML: ["Revolution Gym", "SAFE-X AI"],
+  CSS: ["Revolution Gym", "SAFE-X AI"],
+  FastAPI: ["SAFE-X AI", "SENTINEL-X"],
+  WebSockets: ["SAFE-X AI", "SENTINEL-X"],
+  YOLOv8: ["SAFE-X AI", "SENTINEL-X"],
+  OpenCV: ["SAFE-X AI", "SENTINEL-X"],
   PaddleOCR: ["SENTINEL-X"],
   Firebase: ["Revolution Gym"],
   "Next.js": ["This site"],
@@ -261,10 +340,10 @@ export const techUsage: Record<string, string[]> = {
 
 // Repositories shown in the activity section (enriched with live data when available).
 export const selectedRepos = [
-  { name: "fire-vdo", blurb: "SAFEX AI: browser-camera fire, smoke & occupancy detection with exit routing." },
+  { name: "fire-vdo", blurb: "SAFE-X AI: browser-camera fire, smoke & occupancy detection with exit routing." },
   { name: "jarvis-ai", blurb: "Award-winning voice assistant for desktop automation & AI task execution." },
   { name: "SIH-TECH-GARUDA", blurb: "SENTINEL-X: intelligent border surveillance for SIH 2026." },
   { name: "fire-risk-detection-ai", blurb: "Real-time fire & smoke risk classification with computer vision." },
   { name: "Revolution-Gym", blurb: "Gym site, member portal & admin panel." },
-  { name: "Fire", blurb: "SAFEX AI core: detection, pathfinding and hospital simulation." },
+  { name: "Fire", blurb: "SAFE-X AI core: detection, pathfinding and hospital simulation." },
 ];

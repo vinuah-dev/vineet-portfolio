@@ -3,7 +3,8 @@
 import { useLayoutEffect, useRef, useState } from "react";
 import { motion, useInView, useScroll, useSpring, useTransform } from "motion/react";
 import Image from "next/image";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowRight, Plus } from "lucide-react";
+import { MilestoneDetail } from "../milestone-detail";
 import { achievements, timeline } from "@/lib/data";
 import { Reveal, SectionLabel, SplitText } from "../reveal";
 
@@ -32,6 +33,7 @@ function Milestones() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const [distance, setDistance] = useState(0);
+  const [open, setOpen] = useState<number | null>(null);
 
   useLayoutEffect(() => {
     const track = trackRef.current;
@@ -67,45 +69,47 @@ function Milestones() {
           className="flex flex-col gap-4 px-5 md:w-max md:flex-row md:gap-6 md:px-10 xl:px-14 [@media(min-width:1360px)]:pl-[calc((100vw-1360px)/2+3.5rem)]"
         >
           {achievements.map((a, i) => (
-            <Reveal
-              key={a.title}
-              delay={i * 0.06}
-              className="group relative flex min-h-[18rem] flex-col justify-between overflow-hidden border border-line bg-bg-elev p-6 transition-colors duration-500 hover:border-line-strong md:h-[60svh] md:max-h-[34rem] md:min-h-[24rem] md:w-[min(30rem,38vw)] md:p-8"
-            >
-              {a.image && (
-                <div aria-hidden className="absolute inset-x-0 top-0 h-[55%] overflow-hidden">
-                  <Image
-                    src={a.image.src}
-                    alt=""
-                    fill
-                    sizes="(min-width: 768px) 30rem, 100vw"
-                    className="object-cover opacity-45 grayscale transition duration-700 ease-[var(--ease-out)] group-hover:scale-105 group-hover:opacity-90 group-hover:grayscale-0"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-b from-bg-elev/30 via-bg-elev/40 to-bg-elev" />
-                </div>
-              )}
-              <div className="relative flex items-start justify-between">
-                <span className="micro bg-bg-elev/85 px-1.5 py-0.5 text-fg-muted">0{i + 1} · {a.meta}</span>
-                {a.link && (
-                  <a
-                    href={a.link}
-                    target="_blank"
-                    rel="noreferrer"
-                    aria-label={`${a.title} repository`}
-                    className="grid size-8 place-items-center border border-line bg-bg-elev text-fg-muted transition-colors hover:border-accent hover:text-accent"
-                  >
-                    <ArrowUpRight className="size-4" />
-                  </a>
+            <Reveal key={a.id} delay={i * 0.06} className="shrink-0 md:w-[min(26rem,34vw)]">
+              <button
+                type="button"
+                onClick={() => setOpen(i)}
+                data-cursor="Open"
+                aria-label={`${a.mark}: ${a.title}. Open details`}
+                className="group relative flex h-full min-h-[20rem] w-full flex-col justify-between overflow-hidden border border-line bg-bg-elev p-6 text-left transition-colors duration-500 hover:border-line-strong md:h-[60svh] md:max-h-[34rem] md:min-h-[24rem] md:p-8"
+              >
+                {a.images?.[0] && (
+                  <span aria-hidden className="absolute inset-x-0 top-0 h-[58%] overflow-hidden">
+                    <Image
+                      src={a.images[0].src}
+                      alt=""
+                      fill
+                      sizes="(min-width: 768px) 26rem, 100vw"
+                      className="object-cover opacity-40 grayscale transition duration-700 ease-[var(--ease-out)] group-hover:scale-105 group-hover:opacity-90 group-hover:grayscale-0"
+                    />
+                    <span className="absolute inset-0 bg-gradient-to-b from-bg-elev/20 via-bg-elev/40 to-bg-elev" />
+                  </span>
                 )}
-              </div>
-              <div className="relative">
-                <div className="display text-[clamp(3.5rem,7vw,6.5rem)] text-fg transition-colors duration-500 group-hover:text-accent">
-                  {a.mark}
-                </div>
-                <h3 className="mt-6 text-lg font-medium tracking-tight">{a.title}</h3>
-                <p className="mt-2 text-sm text-fg-muted">{a.note}</p>
-                {a.image && <p className="sr-only">{a.image.alt}</p>}
-              </div>
+                <span className="relative flex items-start justify-between">
+                  <span className="micro bg-bg-elev/85 px-1.5 py-0.5 text-fg-muted">0{i + 1}</span>
+                  <span className="grid size-9 place-items-center border border-line bg-bg-elev/85 text-fg-muted transition duration-500 group-hover:rotate-90 group-hover:border-accent group-hover:text-accent">
+                    <Plus className="size-4" />
+                  </span>
+                </span>
+                <span className="relative block">
+                  <span
+                    className={`display block whitespace-nowrap uppercase text-fg transition-colors duration-500 group-hover:text-accent ${
+                      a.mark.length > 6 ? "text-[clamp(2.5rem,4.4vw,4.25rem)]" : "text-[clamp(3rem,6vw,5.75rem)]"
+                    }`}
+                  >
+                    {a.mark}
+                  </span>
+                  <span className="mt-5 block text-lg font-medium leading-snug tracking-tight">{a.title}</span>
+                  <span className="mt-2 block font-mono text-[12px] tracking-wide text-fg-dim">{a.line}</span>
+                  <span className="micro mt-6 flex items-center gap-2 text-fg-muted opacity-100 transition duration-500 md:translate-y-2 md:opacity-0 md:group-hover:translate-y-0 md:group-hover:opacity-100">
+                    View details <ArrowRight className="size-3.5" />
+                  </span>
+                </span>
+              </button>
             </Reveal>
           ))}
           <div className="hidden w-[30vw] shrink-0 flex-col justify-end pb-2 md:flex">
@@ -114,6 +118,8 @@ function Milestones() {
             </p>
           </div>
         </motion.div>
+
+        <MilestoneDetail items={achievements} index={open} onClose={() => setOpen(null)} onIndex={setOpen} />
 
         {distance > 0 && (
           <div className="container-x mt-10 flex items-center gap-4">

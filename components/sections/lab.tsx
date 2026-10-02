@@ -9,7 +9,7 @@ const experiments = [
     icon: Flame,
     k: "Exp. 01",
     title: "Evacuation simulator",
-    body: "SAFEX's routing idea, in your browser. Click the plan to start fires; every person re-plans with hazard-aware A*.",
+    body: "SAFE-X's routing idea, in your browser. Click the plan to start fires; every person re-plans with hazard-aware A*.",
   },
   {
     icon: Bot,

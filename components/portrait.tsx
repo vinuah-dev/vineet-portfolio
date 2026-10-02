@@ -24,7 +24,7 @@ export function Portrait({ src, alt }: { src: string; alt: string }) {
     const STEP = 5;
     let raf = 0;
     let visible = false;
-    const p = { x: -999, y: -999, tx: -999, ty: -999, r: 0, tr: 0, active: false };
+    const p = { x: -999, y: -999, tx: -999, ty: -999, r: 0, tr: 0, active: false, touch: false, lastMove: 0 };
 
     const sample = () => {
       const r = c.getBoundingClientRect();
@@ -55,12 +55,14 @@ export function Portrait({ src, alt }: { src: string; alt: string }) {
     const draw = (t: number) => {
       if (!lum) return;
       ctx.clearRect(0, 0, w, h);
-      // Idle: the lens drifts slowly around the face so the photo is always discoverable.
+      // Touch has no hover: hand the lens back after a short pause.
+      if (p.active && p.touch && t - p.lastMove > 1400) p.active = false;
+      // Idle: the lens rests on the face, breathing very slightly.
       if (!p.active) {
-        const k = reduce ? 0 : t / 2600;
-        p.tx = w * (0.52 + 0.1 * Math.sin(k));
-        p.ty = h * (0.25 + 0.06 * Math.sin(k * 1.7));
-        p.tr = Math.min(w, h) * 0.22;
+        const k = reduce ? 0 : t / 2200;
+        p.tx = w * (FACE.x + 0.012 * Math.sin(k));
+        p.ty = h * (FACE.y + 0.008 * Math.sin(k * 1.3));
+        p.tr = Math.min(w, h) * FACE.r;
       }
       const ease = reduce ? 1 : 0.18;
       p.x += (p.tx - p.x) * ease;
@@ -120,6 +122,8 @@ export function Portrait({ src, alt }: { src: string; alt: string }) {
         p.y = p.ty;
       }
       p.active = true;
+      p.touch = e.pointerType !== "mouse";
+      p.lastMove = performance.now();
       p.tr = Math.min(w, h) * (e.pointerType === "mouse" ? 0.26 : 0.32);
       if (reduce) draw(0);
     };
@@ -129,8 +133,8 @@ export function Portrait({ src, alt }: { src: string; alt: string }) {
 
     const start = () => {
       sample();
-      p.x = w * 0.52;
-      p.y = h * 0.25;
+      p.x = w * FACE.x;
+      p.y = h * FACE.y;
       if (reduce) draw(0);
       else raf = requestAnimationFrame(loop);
     };
@@ -154,6 +158,12 @@ export function Portrait({ src, alt }: { src: string; alt: string }) {
     c.addEventListener("pointermove", move);
     c.addEventListener("pointerdown", move);
     c.addEventListener("pointerleave", leave);
+    c.addEventListener("pointercancel", leave);
+    const outside = (e: PointerEvent) => {
+      if (p.active && e.target !== c) leave();
+    };
+    window.addEventListener("pointermove", outside, { passive: true });
+    window.addEventListener("scroll", leave, { passive: true });
     c.addEventListener("pointerup", (e) => e.pointerType !== "mouse" && leave());
 
     return () => {
@@ -163,6 +173,9 @@ export function Portrait({ src, alt }: { src: string; alt: string }) {
       c.removeEventListener("pointermove", move);
       c.removeEventListener("pointerdown", move);
       c.removeEventListener("pointerleave", leave);
+      c.removeEventListener("pointercancel", leave);
+      window.removeEventListener("pointermove", outside);
+      window.removeEventListener("scroll", leave);
     };
   }, [src]);
 
@@ -177,6 +190,9 @@ export function Portrait({ src, alt }: { src: string; alt: string }) {
     </figure>
   );
 }
+
+/** Where the face sits in /me/vineet.webp (fractions of the frame) and the idle lens size. */
+const FACE = { x: 0.53, y: 0.17, r: 0.2 };
 
 /** drawImage with object-fit: cover, biased to the top (faces). */
 function coverDraw(ctx: CanvasRenderingContext2D, img: HTMLImageElement, w: number, h: number) {

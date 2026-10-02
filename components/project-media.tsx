@@ -2,17 +2,20 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
+import { Portal } from "./portal";
 import { AnimatePresence, motion, useMotionValue, useReducedMotion, useSpring, useTransform } from "motion/react";
-import { ChevronLeft, ChevronRight, Maximize2, Play, X } from "lucide-react";
+import { ChevronLeft, ChevronRight, Maximize2, Play, Volume2, VolumeX, X } from "lucide-react";
 import type { Project } from "@/lib/data";
 import { CipherVisual } from "./project-visuals";
 
-type Slide = { kind: "video"; src: string; poster: string; caption: string } | { kind: "image"; src: string; alt: string; caption: string; w: number; h: number };
+type Slide =
+  | { kind: "video"; src: string; full?: string; poster: string; caption: string }
+  | { kind: "image"; src: string; alt: string; caption: string; w: number; h: number };
 
 function slidesFor(p: Project): Slide[] {
   const s: Slide[] = [];
-  if (p.video) s.push({ kind: "video", src: p.video.src, poster: p.video.poster, caption: "Live HUD · demo footage" });
   for (const shot of p.shots ?? []) s.push({ kind: "image", ...shot });
+  if (p.video) s.push({ kind: "video", src: p.video.src, full: p.video.full, poster: p.video.poster, caption: p.video.caption });
   return s;
 }
 
@@ -24,6 +27,18 @@ export function ProjectMedia({ project, priority = false }: { project: Project; 
   const slides = slidesFor(project);
   const [i, setI] = useState(0);
   const [open, setOpen] = useState(false);
+  const [muted, setMuted] = useState(true);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const toggleSound = () => {
+    const v = videoRef.current;
+    const next = !muted;
+    setMuted(next);
+    if (v) {
+      // Must run inside the click handler so the browser treats it as user-initiated.
+      v.muted = next;
+      if (!next) v.play().catch(() => {});
+    }
+  };
   const reduce = useReducedMotion();
   const ref = useRef<HTMLDivElement>(null);
 
@@ -101,7 +116,7 @@ export function ProjectMedia({ project, priority = false }: { project: Project; 
                 className="absolute inset-0"
               >
                 {current.kind === "video" ? (
-                  <InViewVideo src={current.src} poster={current.poster} />
+                  <InViewVideo ref={videoRef} src={current.src} poster={current.poster} muted={muted || open} />
                 ) : (
                   <Image
                     src={current.src}
@@ -122,6 +137,18 @@ export function ProjectMedia({ project, priority = false }: { project: Project; 
             className="pointer-events-none absolute size-[480px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(closest-side,rgba(255,255,255,0.07),transparent)] opacity-0 transition-opacity duration-300 group-hover:opacity-100"
           />
         </button>
+        {current.kind === "video" && (
+          <button
+            type="button"
+            onClick={toggleSound}
+            aria-pressed={!muted}
+            aria-label={muted ? "Turn sound on" : "Mute"}
+            className="absolute bottom-3 left-3 z-10 inline-flex items-center gap-2 border border-line-strong bg-bg/80 px-3 py-1.5 font-mono text-[11px] backdrop-blur transition-colors hover:border-accent hover:text-accent"
+          >
+            {muted ? <VolumeX className="size-3.5" /> : <Volume2 className="size-3.5 text-accent" />}
+            {muted ? "Sound off · tap for sound" : "Sound on"}
+          </button>
+        )}
       </motion.div>
 
       {slides.length > 1 && (
@@ -163,8 +190,17 @@ export function ProjectMedia({ project, priority = false }: { project: Project; 
 }
 
 /** Plays only while visible; never downloads until it is near the viewport. */
-function InViewVideo({ src, poster }: { src: string; poster: string }) {
-  const ref = useRef<HTMLVideoElement>(null);
+function InViewVideo({
+  src,
+  poster,
+  muted,
+  ref,
+}: {
+  src: string;
+  poster: string;
+  muted: boolean;
+  ref: React.RefObject<HTMLVideoElement | null>;
+}) {
   useEffect(() => {
     const v = ref.current;
     if (!v) return;
@@ -178,11 +214,15 @@ function InViewVideo({ src, poster }: { src: string; poster: string }) {
     );
     io.observe(v);
     return () => io.disconnect();
-  }, []);
+  }, [ref]);
+  useEffect(() => {
+    const v = ref.current;
+    if (!v) return;
+    v.muted = muted;
+  }, [muted, ref]);
   return (
     <video
       ref={ref}
-      src={src}
       poster={poster}
       muted
       loop
@@ -190,7 +230,10 @@ function InViewVideo({ src, poster }: { src: string; poster: string }) {
       preload="none"
       aria-label="Jarvis HUD demo footage"
       className="size-full object-cover"
-    />
+    >
+      <source src={src} type="video/mp4" />
+      <source src={src.replace(/\.mp4$/, ".webm")} type="video/webm" />
+    </video>
   );
 }
 
@@ -231,6 +274,7 @@ function Lightbox({
 
   const s = slides[index];
   return (
+    <Portal>
     <AnimatePresence>
       {open && s && (
         <motion.div
@@ -254,7 +298,10 @@ function Lightbox({
           <div className="relative flex-1 px-4 pb-8 md:px-16" onClick={(e) => e.stopPropagation()}>
             <motion.div key={s.src} initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} className="relative size-full">
               {s.kind === "video" ? (
-                <video src={s.src} poster={s.poster} autoPlay muted loop playsInline controls className="size-full object-contain" />
+                <video poster={s.poster} autoPlay playsInline controls className="size-full object-contain">
+                  <source src={s.full ?? s.src} type="video/mp4" />
+                  <source src={(s.full ?? s.src).replace(/\.mp4$/, ".webm")} type="video/webm" />
+                </video>
               ) : (
                 <Image src={s.src} alt={s.alt} fill sizes="100vw" className="object-contain" />
               )}
@@ -273,5 +320,6 @@ function Lightbox({
         </motion.div>
       )}
     </AnimatePresence>
+    </Portal>
   );
 }

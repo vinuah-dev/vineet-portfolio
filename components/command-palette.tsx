@@ -35,7 +35,7 @@ function buildCommands(notify: (msg: string) => void): Cmd[] {
       run: () => document.getElementById(`project-${p.slug}`)?.scrollIntoView({ behavior: "smooth", block: "center" }),
     })),
     { id: "a-jarvis", group: "Actions", label: "Talk to Jarvis", hint: "Voice assistant", keywords: "ai voice assistant chat", icon: Bot, run: () => window.dispatchEvent(new Event("jarvis:open")) },
-    { id: "a-sim", group: "Actions", label: "Run the evacuation simulator", hint: "SAFEX AI demo", keywords: "fire a* path game", icon: Flame, run: () => scrollTo("lab") },
+    { id: "a-sim", group: "Actions", label: "Run the evacuation simulator", hint: "SAFE-X AI demo", keywords: "fire a* path game", icon: Flame, run: () => scrollTo("lab") },
     {
       id: "a-copy",
       group: "Actions",
